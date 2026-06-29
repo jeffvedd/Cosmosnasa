@@ -255,6 +255,13 @@
     .refresh-btn:hover { background: var(--accent-hover); }
     .refresh-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050508">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CosmosNASA">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");</script>
 </head>
 <body>
   <div class="container">

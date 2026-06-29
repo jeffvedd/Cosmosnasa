@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#050508"/>
+      <stop offset="100%" style="stop-color:#080820"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="40" fill="url(#bg)"/>
+  <rect width="198" height="198" x="1" y="1" rx="39" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.2"/>
+  <!-- Stars -->
+  <circle cx="40" cy="45" r="1.5" fill="#00d4ff" opacity="0.6"/>
+  <circle cx="160" cy="35" r="1" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="155" cy="160" r="1.5" fill="#00d4ff" opacity="0.4"/>
+  <circle cx="35" cy="155" r="1" fill="#00d4ff" opacity="0.6"/>
+  <circle cx="170" cy="100" r="1" fill="#00d4ff" opacity="0.3"/>
+  <circle cx="30" cy="100" r="1.5" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="100" cy="30" r="1" fill="#00d4ff" opacity="0.4"/>
+  <!-- Planet -->
+  <circle cx="100" cy="97" r="32" fill="none" stroke="#00d4ff" stroke-width="2"/>
+  <circle cx="100" cy="97" r="32" fill="rgba(0,212,255,0.05)"/>
+  <!-- Orbit ring -->
+  <ellipse cx="100" cy="97" rx="55" ry="18" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.5"/>
+  <!-- Planet surface lines -->
+  <path d="M72 85 Q100 90 128 85" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+  <path d="M70 100 Q100 105 130 100" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+  <!-- Small moon -->
+  <circle cx="148" cy="78" r="6" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.7"/>
+  <text x="100" y="158" font-family="monospace" font-weight="700" font-size="10" fill="#00d4ff" text-anchor="middle" letter-spacing="2" opacity="0.8">COSMOSNASA</text>
+</svg>
