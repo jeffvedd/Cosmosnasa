@@ -1,7 +1,7 @@
 {
   "name": "CosmosNASA",
   "short_name": "CosmosNASA",
-  "description": "Real-time NASA space data dashboard",
+  "description": "Painel de dados espaciais em tempo real da NASA • Real-time NASA space data dashboard",
   "start_url": "/Cosmosnasa/",
   "scope": "/Cosmosnasa/",
   "display": "standalone",
