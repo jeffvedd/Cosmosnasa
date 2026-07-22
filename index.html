@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🚀 COSMOS NASA Dashboard</title>
-  <meta name="description" content="Real-time NASA space data dashboard">
+  <meta name="description" content="Painel de dados espaciais em tempo real da NASA">
   
   <style>
     :root {
@@ -40,6 +40,33 @@
       margin-bottom: 2rem;
     }
     
+    .lang-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .lang-btn {
+      padding: 0.4rem 0.8rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    
+    .lang-btn.active {
+      background: var(--accent-hover);
+    }
+    
+    .lang-btn:hover {
+      background: var(--accent-hover);
+    }
+    
     header h1 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
@@ -47,7 +74,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-        header p { color: var(--text-secondary); }
+    header p { color: var(--text-secondary); }
     
     .status-bar {
       display: flex;
@@ -96,7 +123,7 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
-        .card-header {
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -194,7 +221,8 @@
       overflow: hidden;
     }
     
-    .asteroid-fill {      height: 100%;
+    .asteroid-fill {      
+      height: 100%;
       background: linear-gradient(90deg, var(--accent), var(--warning));
       border-radius: 4px;
       transition: width 0.5s ease;
@@ -234,6 +262,7 @@
       .grid { grid-template-columns: 1fr; }
       header h1 { font-size: 1.5rem; }
       .weather-grid { grid-template-columns: repeat(2, 1fr); }
+      .lang-selector { position: static; justify-content: center; margin-bottom: 1rem; }
     }
     
     @keyframes pulse {
@@ -243,7 +272,8 @@
     .updating { animation: pulse 1s ease-in-out; }
     
     .refresh-btn {
-      margin-top: 1rem;      padding: 0.5rem 1.2rem;
+      margin-top: 1rem;      
+      padding: 0.5rem 1.2rem;
       background: var(--accent);
       color: white;
       border: none;
@@ -264,23 +294,28 @@
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js");</script>
 </head>
 <body>
+  <div class="lang-selector">
+    <button class="lang-btn active" onclick="setLanguage('pt')" data-lang="pt">PT 🇧🇷</button>
+    <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">EN 🇺🇸</button>
+  </div>
+
   <div class="container">
     
     <header>
-      <h1>🚀 COSMOS NASA Dashboard</h1>
-      <p>Real-time space data from NASA APIs</p>
+      <h1 data-i18n="title">🚀 COSMOS NASA Dashboard</h1>
+      <p data-i18n="subtitle">Dados espaciais em tempo real da NASA</p>
       
       <div class="status-bar">
         <div class="status-item">
           <span class="status-dot" id="status-api"></span>
-          <span>API Status</span>
+          <span data-i18n="api_status">Status da API</span>
         </div>
         <div class="status-item">
           <span class="status-dot" id="status-data"></span>
-          <span>Data Freshness</span>
+          <span data-i18n="data_freshness">Dados Atualizados</span>
         </div>
         <div class="status-item">
-          <span>🔄 Auto-refresh: <strong id="refresh-timer">5:00</strong></span>
+          <span data-i18n="auto_refresh">🔄 Auto-atualização:</span> <strong id="refresh-timer">5:00</strong>
         </div>
       </div>
     </header>
@@ -290,85 +325,87 @@
       <!-- APOD Card -->
       <section class="card" id="card-apod">
         <div class="card-header">
-          <div class="card-title"><span class="icon">🔭</span> Astronomy Picture of the Day</div>
+          <div class="card-title"><span class="icon">🔭</span> <span data-i18n="apod_title">Imagem Astronômica do Dia</span></div>
           <span class="last-updated" id="apod-updated">--</span>
         </div>
         <div id="apod-content">
-          <div class="loading">Loading APOD...</div>
+          <div class="loading" data-i18n="loading_apod">Carregando APOD...</div>
         </div>
       </section>
       
       <!-- Asteroids Card -->
-      <section class="card" id="card-asteroids">        <div class="card-header">
-          <div class="card-title"><span class="icon">☄️</span> Near Earth Objects</div>
+      <section class="card" id="card-asteroids">        
+        <div class="card-header">
+          <div class="card-title"><span class="icon">☄️</span> <span data-i18n="asteroids_title">Objetos Próximos à Terra</span></div>
           <span class="last-updated" id="asteroids-updated">--</span>
         </div>
         <div id="asteroids-content">
-          <div class="loading">Fetching asteroid data...</div>
+          <div class="loading" data-i18n="loading_asteroids">Buscando dados de asteroides...</div>
         </div>
       </section>
       
       <!-- ISS Card -->
       <section class="card" id="card-iss">
         <div class="card-header">
-          <div class="card-title"><span class="icon">🛰️</span> ISS Tracker</div>
+          <div class="card-title"><span class="icon">🛰️</span> <span data-i18n="iss_title">Rastreador da ISS</span></div>
           <span class="last-updated" id="iss-updated">--</span>
         </div>
         <div id="iss-content">
-          <div class="loading">Tracking ISS...</div>
+          <div class="loading" data-i18n="loading_iss">Rastreando ISS...</div>
         </div>
       </section>
       
       <!-- Space Weather Card -->
       <section class="card" id="card-weather">
         <div class="card-header">
-          <div class="card-title"><span class="icon">🌞</span> Space Weather</div>
+          <div class="card-title"><span class="icon">🌞</span> <span data-i18n="weather_title">Clima Espacial</span></div>
           <span class="last-updated" id="weather-updated">--</span>
         </div>
         <div id="weather-content">
-          <div class="loading">Checking solar activity...</div>
+          <div class="loading" data-i18n="loading_weather">Verificando atividade solar...</div>
         </div>
       </section>
       
       <!-- Mars Weather Card -->
       <section class="card" id="card-mars">
         <div class="card-header">
-          <div class="card-title"><span class="icon">🔴</span> Mars Weather (InSight)</div>
+          <div class="card-title"><span class="icon">🔴</span> <span data-i18n="mars_title">Clima de Marte (InSight)</span></div>
           <span class="last-updated" id="mars-updated">--</span>
         </div>
         <div id="mars-content">
-          <div class="loading">Loading Mars data...</div>
+          <div class="loading" data-i18n="loading_mars">Carregando dados de Marte...</div>
         </div>
       </section>
       
       <!-- System Info Card -->
       <section class="card" id="card-system">
         <div class="card-header">
-          <div class="card-title"><span class="icon">⚙️</span> System Info</div>
+          <div class="card-title"><span class="icon">⚙️</span> <span data-i18n="system_title">Informações do Sistema</span></div>
         </div>
         <div id="system-content">
           <div class="data-row">
-            <span class="data-label">Dashboard Version</span>            <span class="data-value">2.1.0 ✅</span>
+            <span class="data-label" data-i18n="dashboard_version">Versão do Dashboard</span>            
+            <span class="data-value">2.1.0 ✅</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Data Source</span>
+            <span class="data-label" data-i18n="data_source">Fonte de Dados</span>
             <span class="data-value">NASA Open APIs</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Refresh Interval</span>
-            <span class="data-value">5 minutes</span>
+            <span class="data-label" data-i18n="refresh_interval">Intervalo de Atualização</span>
+            <span class="data-value" data-i18n="refresh_interval_val">5 minutos</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Rate Limit</span>
-            <span class="data-value">~50 req/hour</span>
+            <span class="data-label" data-i18n="rate_limit">Limite de Taxa</span>
+            <span class="data-value" data-i18n="rate_limit_val">~50 req/hora</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Last Full Update</span>
+            <span class="data-label" data-i18n="last_update">Última Atualização Completa</span>
             <span class="data-value" id="last-full-update">--</span>
           </div>
           <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
             <p style="font-size: 0.9rem; color: var(--text-secondary);">
-              💡 Tip: Get your free NASA API key at 
+              💡 <span data-i18n="nasa_key_tip">Obtenha sua chave gratuita da NASA em</span> 
               <a href="https://api.nasa.gov" target="_blank" rel="noopener">api.nasa.gov</a>
             </p>
           </div>
@@ -379,18 +416,202 @@
     
     <footer class="footer">
       <p>
-        Built with ❤️ using NASA Open APIs • 
+        <span data-i18n="built_with">Construído com ❤️ usando NASA Open APIs</span> • 
         <a href="https://api.nasa.gov" target="_blank" rel="noopener">api.nasa.gov</a> •
-        <a href="https://github.com/jeffvedd/Cosmosnasa" target="_blank" rel="noopener">View Source</a>
+        <a href="https://github.com/jeffvedd/Cosmosnasa" target="_blank" rel="noopener" data-i18n="view_source">Ver Código-Fonte</a>
       </p>
       <p style="margin-top: 0.5rem; font-size: 0.85rem;">
-        Data provided by NASA. Not for navigation or critical operations.
+        <span data-i18n="data_disclaimer">Dados fornecidos pela NASA. Não é para navegação ou operações críticas.</span>
       </p>
     </footer>
     
   </div>
 
   <script>
+    // ==================== TRADUÇÕES ====================
+    const translations = {
+      pt: {
+        title: "🚀 COSMOS NASA Dashboard",
+        subtitle: "Dados espaciais em tempo real da NASA",
+        api_status: "Status da API",
+        data_freshness: "Dados Atualizados",
+        auto_refresh: "🔄 Auto-atualização:",
+        apod_title: "Imagem Astronômica do Dia",
+        loading_apod: "Carregando APOD...",
+        asteroids_title: "Objetos Próximos à Terra",
+        loading_asteroids: "Buscando dados de asteroides...",
+        iss_title: "Rastreador da ISS",
+        loading_iss: "Rastreando ISS...",
+        weather_title: "Clima Espacial",
+        loading_weather: "Verificando atividade solar...",
+        mars_title: "Clima de Marte (InSight)",
+        loading_mars: "Carregando dados de Marte...",
+        system_title: "Informações do Sistema",
+        dashboard_version: "Versão do Dashboard",
+        data_source: "Fonte de Dados",
+        refresh_interval: "Intervalo de Atualização",
+        refresh_interval_val: "5 minutos",
+        rate_limit: "Limite de Taxa",
+        rate_limit_val: "~50 req/hora",
+        last_update: "Última Atualização Completa",
+        nasa_key_tip: "Obtenha sua chave gratuita da NASA em",
+        built_with: "Construído com ❤️ usando NASA Open APIs",
+        view_source: "Ver Código-Fonte",
+        data_disclaimer: "Dados fornecidos pela NASA. Não é para navegação ou operações críticas.",
+        neo_today: "NEOs Hoje",
+        potentially_hazardous: "Potencialmente Perigoso",
+        hazardous_percent: "% dos NEOs de hoje são potencialmente perigosos",
+        closest_approach: "🎯 Aproximação Mais Próxima:",
+        name: "Nome",
+        date: "Data",
+        distance: "Distância",
+        diameter: "Diâmetro",
+        latitude: "Latitude",
+        longitude: "Longitude",
+        last_time_update: "Última Atualização",
+        view_on_map: "🗺️ Ver no Mapa",
+        crew_aboard: "👨‍🚀 Tripulação a Bordo:",
+        data_unavailable: "Dados indisponíveis",
+        cme_events: "Eventos CME",
+        top_flare: "Maior Erupção",
+        geomagnetic: "Geomagnético",
+        earth_impact: "Impacto na Terra",
+        cme_status: "Status CME",
+        solar_flares: "Erupções Solares",
+        space_weather_tip: "💡 O clima espacial pode afetar satélites, redes elétricas e comunicações.",
+        mars_weather_unavailable: "Dados de clima de Marte indisponíveis",
+        mars_mission_ended: "A missão InSight terminou em dezembro de 2022.",
+        martian_sol: "Sol Marciano",
+        season: "Estação",
+        avg_temperature: "Temperatura Média",
+        min_temp: "Mín (°C)",
+        max_temp: "Máx (°C)",
+        pressure: "Pressão (hPa)",
+        wind_speed: "Vento (m/s)",
+        wind_direction: "Direção do Vento:",
+        elysium_planitia: "📍 Elysium Planitia • Dados do NASA InSight Lander",
+        refresh_now: "🔄 Atualizar Agora",
+        loading_text: "Carregando...",
+        video_content: "Conteúdo de vídeo - visualize no site da NASA:",
+        read_full: "Ler explicação completa →",
+        picture_of_day: "Imagem Astronômica do Dia",
+        fetch_complete: "Busca concluída:",
+        apis_successful: "APIs bem-sucedidas",
+        starting_fetch: "🔄 Iniciando ciclo de busca de dados...",
+        dashboard_initializing: "🚀 Painel COSMOS NASA inicializando...",
+        dashboard_ready: "✨ Painel pronto!"
+      },
+      en: {
+        title: "🚀 COSMOS NASA Dashboard",
+        subtitle: "Real-time space data from NASA",
+        api_status: "API Status",
+        data_freshness: "Data Freshness",
+        auto_refresh: "🔄 Auto-refresh:",
+        apod_title: "Astronomy Picture of the Day",
+        loading_apod: "Loading APOD...",
+        asteroids_title: "Near Earth Objects",
+        loading_asteroids: "Fetching asteroid data...",
+        iss_title: "ISS Tracker",
+        loading_iss: "Tracking ISS...",
+        weather_title: "Space Weather",
+        loading_weather: "Checking solar activity...",
+        mars_title: "Mars Weather (InSight)",
+        loading_mars: "Loading Mars data...",
+        system_title: "System Info",
+        dashboard_version: "Dashboard Version",
+        data_source: "Data Source",
+        refresh_interval: "Refresh Interval",
+        refresh_interval_val: "5 minutes",
+        rate_limit: "Rate Limit",
+        rate_limit_val: "~50 req/hour",
+        last_update: "Last Full Update",
+        nasa_key_tip: "Get your free NASA API key at",
+        built_with: "Built with ❤️ using NASA Open APIs",
+        view_source: "View Source",
+        data_disclaimer: "Data provided by NASA. Not for navigation or critical operations.",
+        neo_today: "Total NEOs Today",
+        potentially_hazardous: "Potentially Hazardous",
+        hazardous_percent: "% of today's NEOs are potentially hazardous",
+        closest_approach: "🎯 Closest Approach:",
+        name: "Name",
+        date: "Date",
+        distance: "Distance",
+        diameter: "Diameter",
+        latitude: "Latitude",
+        longitude: "Longitude",
+        last_time_update: "Last Update",
+        view_on_map: "🗺️ View on Map",
+        crew_aboard: "👨‍🚀 Crew Aboard:",
+        data_unavailable: "Data unavailable",
+        cme_events: "CME Events",
+        top_flare: "Top Flare",
+        geomagnetic: "Geomagnetic",
+        earth_impact: "Earth Impact",
+        cme_status: "CME Status",
+        solar_flares: "Solar Flares",
+        space_weather_tip: "💡 Space weather can affect satellites, power grids, and communications.",
+        mars_weather_unavailable: "Mars weather data unavailable",
+        mars_mission_ended: "The InSight mission ended in December 2022.",
+        martian_sol: "Martian Sol",
+        season: "Season",
+        avg_temperature: "Avg Temperature",
+        min_temp: "Min (°C)",
+        max_temp: "Max (°C)",
+        pressure: "Pressure (hPa)",
+        wind_speed: "Wind (m/s)",
+        wind_direction: "Wind Direction:",
+        elysium_planitia: "📍 Elysium Planitia • Data from NASA InSight Lander",
+        refresh_now: "🔄 Refresh Now",
+        loading_text: "Loading...",
+        video_content: "Video content - view on NASA site:",
+        read_full: "Read full explanation →",
+        picture_of_day: "Astronomy Picture of the Day",
+        fetch_complete: "Fetch complete:",
+        apis_successful: "APIs successful",
+        starting_fetch: "🔄 Starting data fetch cycle...",
+        dashboard_initializing: "🚀 COSMOS NASA Dashboard initializing...",
+        dashboard_ready: "✨ Dashboard ready!"
+      }
+    };
+
+    // Estado de idioma
+    let currentLanguage = localStorage.getItem('language') || 'pt';
+
+    // Função para traduzir
+    function translate(key) {
+      return translations[currentLanguage][key] || key;
+    }
+
+    // Função para mudar idioma
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('language', lang);
+      
+      // Atualizar botões
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.getAttribute('data-lang') === lang) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Atualizar html lang
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+
+      // Atualizar textos
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = translate(key);
+      });
+
+      // Re-renderizar dados se disponível
+      if(state.data.apod) renderAPOD(state.data.apod);
+      if(state.data.asteroids) renderAsteroids(state.data.asteroids);
+      if(state.data.iss) renderISS(state.data.iss);
+      if(state.data.spaceWeather) renderSpaceWeather(state.data.spaceWeather);
+      if(state.data.mars) renderMarsWeather(state.data.mars);
+    }
+
     // ==================== CONFIGURATION ====================
     const CONFIG = {
       NASA_API_KEY: 'jJVEQxvqPSbHW80au6jKgwDk7prqdzamhyDjvz9p',
@@ -418,7 +639,7 @@
     
     const formatNumber = (num, decimals = 0) => {
       const safeNum = typeof num === 'number' && !isNaN(num) ? num : 0;
-      return new Intl.NumberFormat('en-US', { 
+      return new Intl.NumberFormat(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', { 
         maximumFractionDigits: Math.max(0, Math.min(20, decimals)) 
       }).format(safeNum);
     };
@@ -426,7 +647,7 @@
     const formatDate = (dateStr) => {
       if(!dateStr) return '--';
       const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', { 
+      return date.toLocaleDateString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', { 
         month: 'short', day: 'numeric', year: 'numeric' 
       });
     };
@@ -434,7 +655,7 @@
     const formatTime = (dateStr) => {
       if(!dateStr) return '--';
       const date = typeof dateStr === 'number' ? new Date(dateStr * 1000) : new Date(dateStr);
-      return date.toLocaleTimeString('en-US', { 
+      return date.toLocaleTimeString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', { 
         hour: '2-digit', minute: '2-digit' 
       });
     };
@@ -446,7 +667,8 @@
     
     const updateLastUpdated = (elementId) => {
       const el = $(elementId);
-      if(el) el.textContent = new Date().toLocaleTimeString();    };
+      if(el) el.textContent = new Date().toLocaleTimeString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US');    
+    };
     
     const setStatusDot = (elementId, status) => {
       const dot = $(elementId);
@@ -472,7 +694,7 @@
       } catch(err) {
         console.error('APOD fetch error:', err);
         const el = $('#apod-content');
-        if(el) el.innerHTML = `<div class="error">Failed to load APOD: ${err.message}</div>`;
+        if(el) el.innerHTML = `<div class="error">${translate('loading_apod')}: ${err.message}</div>`;
         return false;
       }
     }
@@ -495,7 +717,8 @@
         
         for(const date in data.near_earth_objects) {
           for(const asteroid of data.near_earth_objects[date]) {
-            if(asteroid.is_potentially_hazardous_asteroid) {              result.hazardousCount++;
+            if(asteroid.is_potentially_hazardous_asteroid) {              
+              result.hazardousCount++;
             }
             const approach = asteroid.close_approach_data?.[0];
             if(approach?.miss_distance?.lunar) {
@@ -521,14 +744,13 @@
       } catch(err) {
         console.error('Asteroids fetch error:', err);
         const el = $('#asteroids-content');
-        if(el) el.innerHTML = `<div class="error">Failed to load asteroid data: ${err.message}</div>`;
+        if(el) el.innerHTML = `<div class="error">${translate('loading_asteroids')}: ${err.message}</div>`;
         return false;
       }
     }
     
     async function fetchISS() {
       try {
-        // Using a more reliable public API for ISS position
         const [posRes, crewRes] = await Promise.all([
           fetch('https://api.wheretheiss.at/v1/satellites/25544'),
           fetch('http://api.open-notify.org/astros.json')
@@ -544,7 +766,8 @@
         const result = {
           latitude: parseFloat(posData.latitude) || 0,
           longitude: parseFloat(posData.longitude) || 0,
-          timestamp: posData.timestamp || Date.now()/1000,          peopleInSpace: crewData.number || 0,
+          timestamp: posData.timestamp || Date.now()/1000,          
+          peopleInSpace: crewData.number || 0,
           crew: (crewData.people || []).map(p => p.name).slice(0, 4)
         };
         
@@ -555,7 +778,7 @@
       } catch(err) {
         console.error('ISS fetch error:', err);
         const el = $('#iss-content');
-        if(el) el.innerHTML = `<div class="error">ISS data temporarily unavailable<br><small>${err.message}</small></div>`;
+        if(el) el.innerHTML = `<div class="error">${translate('loading_iss')}<br><small>${err.message}</small></div>`;
         return false;
       }
     }
@@ -566,8 +789,8 @@
         const startDate = new Date(Date.now() - 3*24*60*60*1000).toISOString().split('T')[0];
         
         let cmeCount = 0;
-        let flareStatus = 'No significant activity';
-        let gstStatus = 'No storms';
+        let flareStatus = translate('loading_weather');
+        let gstStatus = translate('data_unavailable');
         
         try {
           const response = await fetch(
@@ -583,7 +806,7 @@
         
         const result = {
           cmeCount,
-          cmeStatus: cmeCount > 0 ? `${cmeCount} CME(s) detected` : 'Quiet',
+          cmeStatus: cmeCount > 0 ? `${cmeCount} CME(s)` : 'Quiet',
           flareStatus,
           gstStatus,
           lastUpdate: new Date().toISOString()
@@ -593,9 +816,10 @@
         renderSpaceWeather(result);
         updateLastUpdated('#weather-updated');
         return true;
-      } catch(err) {        console.error('Space weather fetch error:', err);
+      } catch(err) {        
+        console.error('Space weather fetch error:', err);
         const el = $('#weather-content');
-        if(el) el.innerHTML = `<div class="error">Failed to load space weather: ${err.message}</div>`;
+        if(el) el.innerHTML = `<div class="error">${translate('loading_weather')}: ${err.message}</div>`;
         return false;
       }
     }
@@ -610,7 +834,7 @@
         const data = await response.json();
         
         if(!data.sol_keys || data.sol_keys.length === 0) {
-          throw new Error('No Mars weather data available');
+          throw new Error(translate('mars_mission_ended'));
         }
         
         const latestSol = data.sol_keys[0];
@@ -640,9 +864,8 @@
         console.error('Mars weather fetch error:', err);
         const el = $('#mars-content');
         if(el) {
-          el.innerHTML = `<div class="error">${err.message.includes('No Mars') ? 
-            ' Mars weather data unavailable<br><small>InSight mission ended in 2022</small>' : 
-            `Failed to load Mars data: ${err.message}`}</div>`;        }
+          el.innerHTML = `<div class="error">${translate('mars_weather_unavailable')}<br><small>${translate('mars_mission_ended')}</small></div>`;        
+        }
         return false;
       }
     }
@@ -664,7 +887,7 @@
           <p class="apod-explanation">${truncate(data.explanation, 200)}</p>
           ${data.explanation && data.explanation.length > 200 ? 
             `<p style="margin-top: 0.5rem;"><a href="${data.url}" target="_blank" 
-              style="color: var(--accent);">Read full explanation →</a></p>` : ''}
+              style="color: var(--accent);">${translate('read_full')}</a></p>` : ''}
         `;
       } else {
         container.innerHTML = `
@@ -673,7 +896,7 @@
             ${formatDate(data.date)} • 🎥 Video
           </p>
           <div style="background: var(--bg-primary); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-            <p>📹 Video content - view on NASA site:</p>
+            <p>${translate('video_content')}</p>
             <a href="${data.url}" target="_blank" style="color: var(--accent); word-break: break-all;">
               ${truncate(data.url, 50)}
             </a>
@@ -691,7 +914,8 @@
       const hazardousCount = data.hazardousCount || 0;
       const hazardPercent = totalCount > 0 ? Math.min(100, (hazardousCount / totalCount) * 100) : 0;
       
-      let closestHtml = '';      if(data.closest) {
+      let closestHtml = '';      
+      if(data.closest) {
         const distDisplay = data.closest.distance < 1 
           ? `${formatNumber(data.closest.distance * 384400, 0)} km` 
           : `${formatNumber(data.closest.distance, 2)} LD`;
@@ -702,21 +926,21 @@
         
         closestHtml = `
           <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-            <p style="font-weight: 500; margin-bottom: 0.5rem;">🎯 Closest Approach:</p>
+            <p style="font-weight: 500; margin-bottom: 0.5rem;">${translate('closest_approach')}</p>
             <div class="data-row">
-              <span class="data-label">Name</span>
+              <span class="data-label">${translate('name')}</span>
               <span class="data-value">${truncate(data.closest.name, 20)}</span>
             </div>
             <div class="data-row">
-              <span class="data-label">Date</span>
+              <span class="data-label">${translate('date')}</span>
               <span class="data-value">${formatDate(data.closest.date)}</span>
             </div>
             <div class="data-row">
-              <span class="data-label">Distance</span>
+              <span class="data-label">${translate('distance')}</span>
               <span class="data-value">${distDisplay}</span>
             </div>
             <div class="data-row">
-              <span class="data-label">Diameter</span>
+              <span class="data-label">${translate('diameter')}</span>
               <span class="data-value">${diamDisplay}</span>
             </div>
           </div>
@@ -725,11 +949,11 @@
       
       container.innerHTML = `
         <div class="data-row">
-          <span class="data-label">Total NEOs Today</span>
+          <span class="data-label">${translate('neo_today')}</span>
           <span class="data-value highlight">${formatNumber(totalCount)}</span>
         </div>
         <div class="data-row">
-          <span class="data-label">Potentially Hazardous</span>
+          <span class="data-label">${translate('potentially_hazardous')}</span>
           <span class="data-value ${hazardousCount > 0 ? 'warning' : ''}">
             ${hazardousCount > 0 ? '⚠️ ' + formatNumber(hazardousCount) : 'None'}
           </span>
@@ -738,9 +962,10 @@
           <div class="asteroid-fill" style="width: ${hazardPercent}%"></div>
         </div>
         <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.3rem 0;">
-          ${hazardPercent.toFixed(1)}% of today's NEOs are potentially hazardous
+          ${hazardPercent.toFixed(1)}% ${translate('hazardous_percent')}
         </p>
-        ${closestHtml}      `;
+        ${closestHtml}      
+      `;
     }
     
     function renderISS(data) {
@@ -751,31 +976,31 @@
       
       container.innerHTML = `
         <div class="data-row">
-          <span class="data-label">Latitude</span>
+          <span class="data-label">${translate('latitude')}</span>
           <span class="data-value highlight">${data.latitude.toFixed(2)}°</span>
         </div>
         <div class="data-row">
-          <span class="data-label">Longitude</span>
+          <span class="data-label">${translate('longitude')}</span>
           <span class="data-value highlight">${data.longitude.toFixed(2)}°</span>
         </div>
         <div class="data-row">
-          <span class="data-label">Last Update</span>
+          <span class="data-label">${translate('last_time_update')}</span>
           <span class="data-value">${formatTime(data.timestamp)}</span>
         </div>
         <div style="margin: 0.8rem 0; text-align: center;">
           <a href="${mapUrl}" target="_blank" rel="noopener" 
              style="display: inline-block; padding: 0.4rem 1rem; background: var(--accent); 
                     color: white; text-decoration: none; border-radius: 6px; font-size: 0.9rem;">
-            🗺️ View on Map
+            ${translate('view_on_map')}
           </a>
         </div>
         
         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-          <p style="font-weight: 500; margin-bottom: 0.5rem;">👨‍🚀 Crew Aboard: ${data.peopleInSpace}</p>
+          <p style="font-weight: 500; margin-bottom: 0.5rem;">${translate('crew_aboard')} ${data.peopleInSpace}</p>
           <div class="crew-list">
             ${data.crew && data.crew.length > 0 
               ? data.crew.map(name => `<span class="crew-badge">${truncate(name, 15)}</span>`).join('')
-              : '<span style="color: var(--text-secondary); font-size: 0.9rem;">Data unavailable</span>'
+              : '<span style="color: var(--text-secondary); font-size: 0.9rem;">' + translate('data_unavailable') + '</span>'
             }
           </div>
         </div>
@@ -789,7 +1014,8 @@
       const getStatusClass = (status) => {
         if(!status) return '';
         if(status.includes('Detected') || status.includes('Storm') || status.includes('Flare') || status.includes('CME')) return 'warning';
-        if(status.includes('Quiet') || status.includes('No')) return '';        return '';
+        if(status.includes('Quiet') || status.includes('No')) return '';        
+        return '';
       };
       
       const flareDisplay = data.flareStatus?.includes('Class') 
@@ -800,45 +1026,46 @@
         <div class="weather-grid">
           <div class="weather-item">
             <div class="weather-value">${data.cmeCount || 0}</div>
-            <div class="weather-label">CME Events</div>
+            <div class="weather-label">${translate('cme_events')}</div>
           </div>
           <div class="weather-item">
             <div class="weather-value ${getStatusClass(data.flareStatus)}">
               ${flareDisplay}
             </div>
-            <div class="weather-label">Top Flare</div>
+            <div class="weather-label">${translate('top_flare')}</div>
           </div>
           <div class="weather-item">
             <div class="weather-value ${getStatusClass(data.gstStatus)}">
               ${data.gstStatus?.includes('No') ? '✓' : '⚠️'}
             </div>
-            <div class="weather-label">Geomagnetic</div>
+            <div class="weather-label">${translate('geomagnetic')}</div>
           </div>
           <div class="weather-item">
             <div class="weather-value">🌍</div>
-            <div class="weather-label">Earth Impact</div>
+            <div class="weather-label">${translate('earth_impact')}</div>
           </div>
         </div>
         
         <div style="margin-top: 1rem;">
           <div class="data-row">
-            <span class="data-label">CME Status</span>
+            <span class="data-label">${translate('cme_status')}</span>
             <span class="data-value ${getStatusClass(data.cmeStatus)}">${data.cmeStatus || '—'}</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Solar Flares</span>
+            <span class="data-label">${translate('solar_flares')}</span>
             <span class="data-value ${getStatusClass(data.flareStatus)}">${data.flareStatus || '—'}</span>
           </div>
           <div class="data-row">
-            <span class="data-label">Geomagnetic</span>
+            <span class="data-label">${translate('geomagnetic')}</span>
             <span class="data-value ${getStatusClass(data.gstStatus)}">${data.gstStatus || '—'}</span>
           </div>
         </div>
         
         <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
-          💡 Space weather can affect satellites, power grids, and communications.
+          ${translate('space_weather_tip')}
         </p>
-      `;    }
+      `;    
+    }
     
     function renderMarsWeather(data) {
       const container = $('#mars-content');
@@ -847,10 +1074,9 @@
       if(!data.available || !data.temperature) {
         container.innerHTML = `
           <div class="error" style="text-align: center;">
-            <p> Mars weather data unavailable</p>
+            <p>${translate('mars_weather_unavailable')}</p>
             <p style="font-size: 0.9rem; margin-top: 0.5rem;">
-              The InSight mission ended in December 2022.<br>
-              Historical data may still be accessible.
+              ${translate('mars_mission_ended')}<br>
             </p>
           </div>
         `;
@@ -862,11 +1088,11 @@
       
       container.innerHTML = `
         <div class="data-row">
-          <span class="data-label">Martian Sol</span>
+          <span class="data-label">${translate('martian_sol')}</span>
           <span class="data-value">${data.sol}</span>
         </div>
         <div class="data-row">
-          <span class="data-label">Season</span>
+          <span class="data-label">${translate('season')}</span>
           <span class="data-value">${data.season}</span>
         </div>
         
@@ -875,43 +1101,44 @@
             ${tempC !== null ? tempC.toFixed(1) : '--'}°C
           </div>
           <div style="color: var(--text-secondary); font-size: 0.95rem;">
-            ${tempF !== null ? tempF.toFixed(1) + '°F' : '--'} • Avg Temperature
+            ${tempF !== null ? tempF.toFixed(1) + '°F' : '--'} • ${translate('avg_temperature')}
           </div>
         </div>
         
         <div class="weather-grid">
           <div class="weather-item">
             <div class="weather-value">${data.temperature.min !== null ? data.temperature.min.toFixed(0) : '--'}°</div>
-            <div class="weather-label">Min (°C)</div>
+            <div class="weather-label">${translate('min_temp')}</div>
           </div>
           <div class="weather-item">
             <div class="weather-value">${data.temperature.max !== null ? data.temperature.max.toFixed(0) : '--'}°</div>
-            <div class="weather-label">Max (°C)</div>
-          </div>          <div class="weather-item">
+            <div class="weather-label">${translate('max_temp')}</div>
+          </div>          
+          <div class="weather-item">
             <div class="weather-value">${data.pressure !== null ? (data.pressure / 100).toFixed(1) : '--'}</div>
-            <div class="weather-label">Pressure (hPa)</div>
+            <div class="weather-label">${translate('pressure')}</div>
           </div>
           <div class="weather-item">
             <div class="weather-value">${data.wind?.speed !== null ? data.wind.speed.toFixed(1) : '--'}</div>
-            <div class="weather-label">Wind (m/s)</div>
+            <div class="weather-label">${translate('wind_speed')}</div>
           </div>
         </div>
         
         ${data.wind?.direction ? `
           <div style="margin-top: 0.8rem; text-align: center; color: var(--text-secondary);">
-            Wind Direction: <strong>${data.wind.direction}</strong>
+            ${translate('wind_direction')} <strong>${data.wind.direction}</strong>
           </div>
         ` : ''}
         
         <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
-          📍 Elysium Planitia • Data from NASA InSight Lander
+          ${translate('elysium_planitia')}
         </p>
       `;
     }
     
     // ==================== MAIN FETCH ORCHESTRATOR ====================
     async function fetchAllData() {
-      console.log('🔄 Starting data fetch cycle...');
+      console.log(translate('starting_fetch'));
       setStatusDot('#status-api', '');
       
       const results = await Promise.allSettled([
@@ -928,15 +1155,15 @@
       
       state.lastFetch = new Date();
       const lastUpdateEl = $('#last-full-update');
-      if(lastUpdateEl) lastUpdateEl.textContent = state.lastFetch.toLocaleTimeString();
+      if(lastUpdateEl) lastUpdateEl.textContent = state.lastFetch.toLocaleTimeString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US');
       
-      console.log(`✅ Fetch complete: ${successCount}/5 APIs successful`);
+      console.log(`✅ ${translate('fetch_complete')} ${successCount}/5 ${translate('apis_successful')}`);
     }
     
     // ==================== REFRESH TIMER ====================
     function startRefreshTimer() {
       state.countdown = CONFIG.REFRESH_INTERVAL / 1000;
-            if(state.refreshTimer) clearInterval(state.refreshTimer);
+      if(state.refreshTimer) clearInterval(state.refreshTimer);
       
       state.refreshTimer = setInterval(() => {
         state.countdown--;
@@ -955,7 +1182,10 @@
     
     // ==================== INITIALIZATION ====================
     async function init() {
-      console.log(' COSMOS NASA Dashboard initializing...');
+      console.log(translate('dashboard_initializing'));
+      
+      // Aplicar idioma salvo
+      setLanguage(currentLanguage);
       
       await fetchAllData();
       startRefreshTimer();
@@ -964,19 +1194,19 @@
       if(header && !$('.refresh-btn')) {
         const refreshBtn = document.createElement('button');
         refreshBtn.className = 'refresh-btn';
-        refreshBtn.innerHTML = ' Refresh Now';
+        refreshBtn.innerHTML = translate('refresh_now');
         refreshBtn.onclick = async () => {
           refreshBtn.disabled = true;
-          refreshBtn.textContent = 'Loading...';
+          refreshBtn.textContent = translate('loading_text');
           await fetchAllData();
           refreshBtn.disabled = false;
-          refreshBtn.textContent = '🔄 Refresh Now';
+          refreshBtn.textContent = translate('refresh_now');
           state.countdown = CONFIG.REFRESH_INTERVAL / 1000;
         };
         header.appendChild(refreshBtn);
       }
       
-      console.log('✨ Dashboard ready!');
+      console.log(translate('dashboard_ready'));
     }
     
     if(document.readyState === 'loading') {
@@ -985,7 +1215,8 @@
       init();
     }
     
-    document.addEventListener('visibilitychange', () => {      if(document.hidden) {
+    document.addEventListener('visibilitychange', () => {      
+      if(document.hidden) {
         if(state.refreshTimer) clearInterval(state.refreshTimer);
       } else {
         startRefreshTimer();
