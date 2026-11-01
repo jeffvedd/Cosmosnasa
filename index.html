@@ -1,298 +1,584 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🚀 COSMOS NASA Dashboard</title>
-<meta name="description" content="Painel de dados espaciais em tempo real da NASA" />
-<style>
-:root{--bg:#0a0e17;--card:#131a2e;--text:#e6e9f0;--text2:#94a3b8;--accent:#6366f1;--accent2:#818cf8;--ok:#22c55e;--warn:#f59e0b;--bad:#ef4444;--border:#2d3748}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:20px;min-height:100vh}
-.container{max-width:1200px;margin:0 auto}
-.lang-selector{display:flex;justify-content:center;gap:.5rem;margin-bottom:1rem}
-.btn{padding:.4rem .9rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.9rem;transition:background .2s}
-.btn:hover,.btn.active{background:var(--accent2)}
-header{text-align:center;padding:1.5rem 1rem 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
-header h1{font-size:2rem;margin-bottom:.5rem;background:linear-gradient(135deg,#6366f1,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-header p{color:var(--text2)}
-.status-bar{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
-.status-item{display:flex;align-items:center;gap:.5rem;padding:.3rem .8rem;background:var(--card);border-radius:20px;border:1px solid var(--border)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
-.dot.ok{background:var(--ok)}.dot.error{background:var(--bad)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;min-width:0}
-.card-header{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--border)}
-.card-title{font-size:1.15rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
-.card-title .icon{font-size:1.4rem}
-.last-updated{font-size:.8rem;color:var(--text2);white-space:nowrap}
-.row{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px dashed var(--border)}
-.row:last-child{border-bottom:none}
-.label{color:var(--text2)}
-.value{font-weight:500;text-align:right;overflow-wrap:anywhere}
-.hl{color:var(--accent2)}.warn{color:var(--warn)}.bad{color:var(--bad)}.good{color:var(--ok)}
-.img{width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin:.5rem 0;background:var(--bg)}
-.expl{font-size:.92rem;color:var(--text2);margin-top:.6rem;line-height:1.5}
-.bar{height:8px;background:var(--border);border-radius:4px;margin:.6rem 0;overflow:hidden}
-.bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--warn));border-radius:4px;transition:width .5s}
-.badges{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem}
-.badge{background:var(--accent);color:#fff;padding:.15rem .6rem;border-radius:15px;font-size:.82rem}
-.sub{margin-top:.8rem;font-size:.9rem;color:var(--text2)}
-.loading{text-align:center;padding:1.5rem;color:var(--text2)}
-.error{background:rgba(239,68,68,.1);border:1px solid var(--bad);color:var(--bad);padding:.8rem;border-radius:8px}
-.note{font-size:.8rem;color:var(--warn);margin-top:.4rem}
-a{color:var(--accent2);text-decoration:none}a:hover{text-decoration:underline}
-.footer{text-align:center;padding:2rem 1rem;color:var(--text2);font-size:.9rem;border-top:1px solid var(--border);margin-top:2rem}
-@media(max-width:600px){.grid{grid-template-columns:1fr}header h1{font-size:1.5rem}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🚀 COSMOS NASA Dashboard</title>
+  <meta name="description" content="Painel de dados espaciais em tempo real da NASA" />
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-card: #131a2e;
+      --text-primary: #e6e9f0;
+      --text-secondary: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --border: #2d3748;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .lang-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .lang-btn {
+      padding: 0.4rem 0.8rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+    .lang-btn.active { background: var(--accent-hover); }
+    .lang-btn:hover { background: var(--accent-hover); }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header p { color: var(--text-secondary); }
+
+    .status-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+    }
+    .status-dot.ok { background: var(--success); }
+    .status-dot.error { background: var(--danger); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title .icon { font-size: 1.4rem; }
+    .last-updated { font-size: 0.8rem; color: var(--text-secondary); }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .data-row:last-child { border-bottom: none; }
+
+    .data-label { color: var(--text-secondary); }
+    .data-value { font-weight: 500; text-align: right; }
+    .data-value.highlight { color: var(--accent); }
+    .data-value.warning { color: var(--warning); }
+    .data-value.danger { color: var(--danger); }
+
+    .apod-image {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 1rem 0;
+      background: var(--bg-primary);
+    }
+
+    .apod-explanation {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-top: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .crew-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .crew-badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 15px;
+      font-size: 0.85rem;
+    }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .weather-item {
+      text-align: center;
+      padding: 0.6rem;
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 8px;
+    }
+    .weather-value {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .weather-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .asteroid-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      margin: 0.5rem 0;
+      overflow: hidden;
+    }
+    .asteroid-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--warning));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.5rem; }
+      .lang-selector { position: static; justify-content: center; margin-bottom: 1rem; }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
   <div class="lang-selector">
-    <button class="btn active" data-lang="pt" onclick="setLanguage('pt')">PT 🇧🇷</button>
-    <button class="btn" data-lang="en" onclick="setLanguage('en')">EN 🇺🇸</button>
+    <button class="lang-btn active" onclick="setLanguage('pt')" data-lang="pt">PT 🇧🇷</button>
+    <button class="lang-btn" onclick="setLanguage('en')" data-lang="en">EN 🇺🇸</button>
   </div>
 
-  <header>
-    <h1>🚀 COSMOS NASA Dashboard</h1>
-    <p data-i18n="subtitle"></p>
-    <div class="status-bar">
-      <div class="status-item"><span class="dot" id="status-api"></span><span data-i18n="api_status"></span></div>
-      <div class="status-item"><span class="dot" id="status-data"></span><span data-i18n="data_fresh"></span></div>
-      <div class="status-item"><span data-i18n="auto"></span> <strong id="refresh-timer">5:00</strong></div>
-    </div>
-    <button class="btn" onclick="refreshAll()" data-i18n="refresh_now"></button>
-  </header>
+  <div class="container">
+    <header>
+      <h1 data-i18n="title">🚀 COSMOS NASA Dashboard</h1>
+      <p data-i18n="subtitle">Dados espaciais em tempo real da NASA</p>
 
-  <main class="grid">
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🔭</span><span data-i18n="apod_title"></span></div><span class="last-updated" id="apod-updated">--</span></div><div id="apod-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">☄️</span><span data-i18n="neo_title"></span></div><span class="last-updated" id="neo-updated">--</span></div><div id="neo-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🛰️</span><span data-i18n="iss_title"></span></div><span class="last-updated" id="iss-updated">--</span></div><div id="iss-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🌞</span><span data-i18n="weather_title"></span></div><span class="last-updated" id="weather-updated">--</span></div><div id="weather-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🔴</span><span data-i18n="mars_title"></span></div><span class="last-updated" id="mars-updated">--</span></div><div id="mars-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🌋</span><span data-i18n="eonet_title"></span></div><span class="last-updated" id="eonet-updated">--</span></div><div id="eonet-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">🚀</span><span data-i18n="launch_title"></span></div><span class="last-updated" id="launch-updated">--</span></div><div id="launch-content"><div class="loading" data-i18n="loading"></div></div></section>
-    <section class="card"><div class="card-header"><div class="card-title"><span class="icon">⚙️</span><span data-i18n="system_title"></span></div></div>
-      <div class="row"><span class="label" data-i18n="version"></span><span class="value">3.0 ✅</span></div>
-      <div class="row"><span class="label" data-i18n="source"></span><span class="value">NASA, NOAA, EONET</span></div>
-      <div class="row"><span class="label" data-i18n="interval"></span><span class="value">5 min</span></div>
-      <div class="row"><span class="label" data-i18n="last_full"></span><span class="value" id="last-full">--</span></div>
-    </section>
-  </main>
+      <div class="status-bar">
+        <div class="status-item">
+          <span class="status-dot" id="status-api"></span>
+          <span data-i18n="api_status">Status da API</span>
+        </div>
+        <div class="status-item">
+          <span class="status-dot" id="status-data"></span>
+          <span data-i18n="data_freshness">Dados Atualizados</span>
+        </div>
+        <div class="status-item">
+          <span data-i18n="auto_refresh">🔄 Auto-atualização:</span> <strong id="refresh-timer">5:00</strong>
+        </div>
+      </div>
+    </header>
 
-  <footer class="footer">
-    <p><span data-i18n="built"></span> • <a href="https://api.nasa.gov" target="_blank" rel="noopener">api.nasa.gov</a> • <a href="https://github.com/jeffvedd/Cosmosnasa" target="_blank" rel="noopener" data-i18n="view_source"></a></p>
-    <p style="margin-top:.5rem;font-size:.85rem" data-i18n="disclaimer"></p>
-  </footer>
-</div>
+    <main class="grid">
+      <section class="card" id="card-apod">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">🔭</span> <span data-i18n="apod_title">Imagem Astronômica do Dia</span></div>
+          <span class="last-updated" id="apod-updated">--</span>
+        </div>
+        <div id="apod-content">
+          <div class="loading" data-i18n="loading_apod">Carregando APOD...</div>
+        </div>
+      </section>
 
-<script>
-/* ====== CONFIGURAÇÃO ======
-   Gere uma chave nova e grátis em https://api.nasa.gov e cole abaixo.
-   Sem chave, usa DEMO_KEY (limite baixo: 30 req/hora por IP). */
-const CONFIG = {
-  NASA_API_KEY: 'jJVEQxvqPSbHW80au6jKgwDk7prqdzamhyDjvz9p',
-  REFRESH_INTERVAL: 5 * 60 * 1000,
-  TIMEOUT: 15000,
-  LAUNCH_EVERY: 30 * 60 * 1000
-};
+      <section class="card" id="card-asteroids">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">☄️</span> <span data-i18n="asteroids_title">Objetos Próximos à Terra</span></div>
+          <span class="last-updated" id="asteroids-updated">--</span>
+        </div>
+        <div id="asteroids-content">
+          <div class="loading" data-i18n="loading_asteroids">Buscando dados de asteroides...</div>
+        </div>
+      </section>
 
-const TR = {
-  pt: {
-    subtitle:'Dados espaciais em tempo real da NASA', api_status:'Status da API', data_fresh:'Dados Atualizados',
-    auto:'🔄 Auto-atualização:', refresh_now:'🔄 Atualizar Agora', loading:'Carregando...', unavailable:'Dados indisponíveis',
-    apod_title:'Imagem Astronômica do Dia', neo_title:'Objetos Próximos à Terra', iss_title:'Rastreador da ISS',
-    weather_title:'Clima Espacial', mars_title:'Perseverance (Marte)', eonet_title:'Eventos Naturais na Terra',
-    launch_title:'Próximos Lançamentos', system_title:'Informações do Sistema', version:'Versão', source:'Fontes de Dados',
-    interval:'Intervalo de Atualização', last_full:'Última Atualização Completa',
-    built:'Construído com ❤️ usando APIs abertas', view_source:'Ver Código-Fonte',
-    disclaimer:'Dados fornecidos pela NASA e NOAA. Não é para navegação ou operações críticas.',
-    neo_today:'NEOs Hoje', hazardous:'Potencialmente Perigosos', hazardous_pct:'dos NEOs de hoje são potencialmente perigosos',
-    closest:'🎯 Aproximação Mais Próxima', name:'Nome', distance:'Distância', diameter:'Diâmetro', speed:'Velocidade',
-    lat:'Latitude', lon:'Longitude', alt:'Altitude', vel:'Velocidade', time:'Atualizado', map:'🗺️ Ver no Mapa', crew:'👨‍🚀 Tripulação a Bordo',
-    cme:'Eventos CME (7 dias)', flare:'Maior Erupção (7 dias)', kp:'Índice Kp', level:'Nível',
-    calm:'Calmo', active:'Ativo', storm:'Tempestade', tip:'💡 O clima espacial pode afetar satélites, redes elétricas e comunicações.',
-    none:'Nenhuma', sol:'Sol marciano', earth_date:'Data na Terra', camera:'Câmera',
-    read_full:'Ler explicação completa →', video:'Conteúdo de vídeo — veja no site da NASA:',
-    from_cache:'⚠️ Mostrando a última imagem salva (NASA fora do ar).', from_fallback:'⚠️ APOD indisponível: imagem da Biblioteca da NASA.',
-    open_events:'eventos abertos'
-  },
-  en: {
-    subtitle:'Real-time space data from NASA', api_status:'API Status', data_fresh:'Data Freshness',
-    auto:'🔄 Auto-refresh:', refresh_now:'🔄 Refresh Now', loading:'Loading...', unavailable:'Data unavailable',
-    apod_title:'Astronomy Picture of the Day', neo_title:'Near Earth Objects', iss_title:'ISS Tracker',
-    weather_title:'Space Weather', mars_title:'Perseverance (Mars)', eonet_title:'Natural Events on Earth',
-    launch_title:'Upcoming Launches', system_title:'System Info', version:'Version', source:'Data Sources',
-    interval:'Refresh Interval', last_full:'Last Full Update',
-    built:'Built with ❤️ using open APIs', view_source:'View Source',
-    disclaimer:'Data provided by NASA and NOAA. Not for navigation or critical operations.',
-    neo_today:'NEOs Today', hazardous:'Potentially Hazardous', hazardous_pct:'of today\'s NEOs are potentially hazardous',
-    closest:'🎯 Closest Approach', name:'Name', distance:'Distance', diameter:'Diameter', speed:'Speed',
-    lat:'Latitude', lon:'Longitude', alt:'Altitude', vel:'Velocity', time:'Updated', map:'🗺️ View on Map', crew:'👨‍🚀 Crew Aboard',
-    cme:'CME Events (7 days)', flare:'Top Flare (7 days)', kp:'Kp Index', level:'Level',
-    calm:'Calm', active:'Active', storm:'Storm', tip:'💡 Space weather can affect satellites, power grids and communications.',
-    none:'None', sol:'Martian Sol', earth_date:'Earth Date', camera:'Camera',
-    read_full:'Read full explanation →', video:'Video content — view on NASA site:',
-    from_cache:'⚠️ Showing the last saved image (NASA is down).', from_fallback:'⚠️ APOD unavailable: image from NASA Image Library.',
-    open_events:'open events'
-  }
-};
+      <section class="card" id="card-iss">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">🛰️</span> <span data-i18n="iss_title">Rastreador da ISS</span></div>
+          <span class="last-updated" id="iss-updated">--</span>
+        </div>
+        <div id="iss-content">
+          <div class="loading" data-i18n="loading_iss">Rastreando ISS...</div>
+        </div>
+      </section>
 
-let lang = localStorage.getItem('language') || 'pt';
-const $ = s => document.querySelector(s);
-const t = k => (TR[lang] && TR[lang][k]) || k;
-const loc = () => lang === 'pt' ? 'pt-BR' : 'en-US';
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const num = (v, d = 0) => new Intl.NumberFormat(loc(), { maximumFractionDigits: d }).format(Number.isFinite(+v) ? +v : 0);
-const row = (l, v, cls = '') => `<div class="row"><span class="label">${l}</span><span class="value ${cls}">${v}</span></div>`;
-const trunc = (s, n) => !s ? '' : s.length > n ? s.slice(0, n - 3) + '...' : s;
-const isoDay = d => d.toISOString().slice(0, 10);
-const KEY = (CONFIG.NASA_API_KEY && !CONFIG.NASA_API_KEY.startsWith('COLE')) ? CONFIG.NASA_API_KEY : 'DEMO_KEY';
-const state = { data: {}, countdown: CONFIG.REFRESH_INTERVAL / 1000, lastLaunch: 0 };
+      <section class="card" id="card-weather">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">🌞</span> <span data-i18n="weather_title">Clima Espacial</span></div>
+          <span class="last-updated" id="weather-updated">--</span>
+        </div>
+        <div id="weather-content">
+          <div class="loading" data-i18n="loading_weather">Verificando atividade solar...</div>
+        </div>
+      </section>
 
-/* ====== REDE ====== */
-async function fetchJSON(url, { retries = 2, timeout = CONFIG.TIMEOUT } = {}) {
-  let last;
-  for (let i = 0; i <= retries; i++) {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeout);
-    try {
-      const res = await fetch(url, { signal: ctrl.signal });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return await res.json();
-    } catch (e) {
-      last = e;
-      if (i < retries) await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-    } finally { clearTimeout(timer); }
-  }
-  throw new Error(last && last.message ? last.message : 'Falha de rede');
-}
+      <section class="card" id="card-mars">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">🔴</span> <span data-i18n="mars_title">Clima de Marte (InSight)</span></div>
+          <span class="last-updated" id="mars-updated">--</span>
+        </div>
+        <div id="mars-content">
+          <div class="loading" data-i18n="loading_mars">Carregando dados de Marte...</div>
+        </div>
+      </section>
 
-async function nasaFetch(path, opts) {
-  let err;
-  for (const k of [...new Set([KEY, 'DEMO_KEY'])]) {
-    try { return await fetchJSON(`https://api.nasa.gov${path}${path.includes('?') ? '&' : '?'}api_key=${k}`, opts); }
-    catch (e) { err = e; }
-  }
-  throw err;
-}
+      <section class="card" id="card-system">
+        <div class="card-header">
+          <div class="card-title"><span class="icon">⚙️</span> <span data-i18n="system_title">Informações do Sistema</span></div>
+        </div>
+        <div id="system-content">
+          <div class="data-row">
+            <span class="data-label" data-i18n="dashboard_version">Versão do Dashboard</span>
+            <span class="data-value">2.1.1 ✅</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label" data-i18n="data_source">Fonte de Dados</span>
+            <span class="data-value">NASA Open APIs</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label" data-i18n="refresh_interval">Intervalo de Atualização</span>
+            <span class="data-value" data-i18n="refresh_interval_val">5 minutos</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label" data-i18n="rate_limit">Limite de Taxa</span>
+            <span class="data-value" data-i18n="rate_limit_val">~50 req/hora</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label" data-i18n="last_update">Última Atualização Completa</span>
+            <span class="data-value" id="last-full-update">--</span>
+          </div>
+        </div>
+      </section>
+    </main>
 
-const stamp = id => { const el = $('#' + id + '-updated'); if (el) el.textContent = new Date().toLocaleTimeString(loc()); };
-const show = (id, html) => { $('#' + id + '-content').innerHTML = html; };
-const fail = (id, e) => { console.warn(id, e); show(id, `<div class="error">${esc(e && e.message ? e.message : t('unavailable'))}</div>`); return false; };
+    <footer class="footer">
+      <p>
+        <span data-i18n="built_with">Construído com ❤️ usando NASA Open APIs</span> •
+        <a href="https://api.nasa.gov" target="_blank" rel="noopener">api.nasa.gov</a> •
+        <a href="https://github.com/jeffvedd/Cosmosnasa" target="_blank" rel="noopener" data-i18n="view_source">Ver Código-Fonte</a>
+      </p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+        <span data-i18n="data_disclaimer">Dados fornecidos pela NASA. Não é para navegação ou operações críticas.</span>
+      </p>
+    </footer>
+  </div>
 
-/* ====== APOD ====== */
-function renderAPOD(d) {
-  let media;
-  if (d.media_type === 'video') {
-    const thumb = d.thumbnail_url ? `<img class="img" src="${esc(d.thumbnail_url)}" alt="${esc(d.title)}">` : '';
-    media = `${thumb}<p class="sub">${t('video')} <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(trunc(d.url, 40))}</a></p>`;
-  } else {
-    media = `<img class="img" src="${esc(d.url)}" alt="${esc(d.title)}" loading="lazy" onerror="this.style.display='none'">`;
-  }
-  const notes = d._source === 'cache' ? `<div class="note">${t('from_cache')}</div>` : d._source === 'fallback' ? `<div class="note">${t('from_fallback')}</div>` : '';
-  show('apod', `<strong>${esc(d.title)}</strong>${media}
-    <div class="expl">${esc(trunc(d.explanation, 280))}</div>
-    <div class="sub">${esc(d.date || '')}${d.copyright ? ' • © ' + esc(String(d.copyright).trim()) : ''}
-    ${d._source ? '' : ` • <a href="https://apod.nasa.gov/apod/astropix.html" target="_blank" rel="noopener">${t('read_full')}</a>`}</div>${notes}`);
-}
+  <script>
+    const translations = {
+      pt: {
+        title: '🚀 COSMOS NASA Dashboard',
+        subtitle: 'Dados espaciais em tempo real da NASA',
+        api_status: 'Status da API',
+        data_freshness: 'Dados Atualizados',
+        auto_refresh: '🔄 Auto-atualização:',
+        apod_title: 'Imagem Astronômica do Dia',
+        loading_apod: 'Carregando APOD...',
+        asteroids_title: 'Objetos Próximos à Terra',
+        loading_asteroids: 'Buscando dados de asteroides...',
+        iss_title: 'Rastreador da ISS',
+        loading_iss: 'Rastreando ISS...',
+        weather_title: 'Clima Espacial',
+        loading_weather: 'Verificando atividade solar...',
+        mars_title: 'Clima de Marte (InSight)',
+        loading_mars: 'Carregando dados de Marte...',
+        system_title: 'Informações do Sistema',
+        dashboard_version: 'Versão do Dashboard',
+        data_source: 'Fonte de Dados',
+        refresh_interval: 'Intervalo de Atualização',
+        refresh_interval_val: '5 minutos',
+        rate_limit: 'Limite de Taxa',
+        rate_limit_val: '~50 req/hora',
+        last_update: 'Última Atualização Completa',
+        built_with: 'Construído com ❤️ usando NASA Open APIs',
+        view_source: 'Ver Código-Fonte',
+        data_disclaimer: 'Dados fornecidos pela NASA. Não é para navegação ou operações críticas.',
+        neo_today: 'NEOs Hoje',
+        potentially_hazardous: 'Potencialmente Perigoso',
+        hazardous_percent: '% dos NEOs de hoje são potencialmente perigosos',
+        closest_approach: '🎯 Aproximação Mais Próxima:',
+        name: 'Nome',
+        date: 'Data',
+        distance: 'Distância',
+        diameter: 'Diâmetro',
+        latitude: 'Latitude',
+        longitude: 'Longitude',
+        last_time_update: 'Última Atualização',
+        view_on_map: '🗺️ Ver no Mapa',
+        crew_aboard: '👨‍🚀 Tripulação a Bordo:',
+        data_unavailable: 'Dados indisponíveis',
+        cme_events: 'Eventos CME',
+        top_flare: 'Maior Erupção',
+        geomagnetic: 'Geomagnético',
+        earth_impact: 'Impacto na Terra',
+        cme_status: 'Status CME',
+        solar_flares: 'Erupções Solares',
+        space_weather_tip: '💡 O clima espacial pode afetar satélites, redes elétricas e comunicações.',
+        mars_weather_unavailable: 'Dados de clima de Marte indisponíveis',
+        mars_mission_ended: 'A missão InSight terminou em dezembro de 2022.',
+        martian_sol: 'Sol Marciano',
+        season: 'Estação',
+        avg_temperature: 'Temperatura Média',
+        min_temp: 'Mín (°C)',
+        max_temp: 'Máx (°C)',
+        pressure: 'Pressão (hPa)',
+        wind_speed: 'Vento (m/s)',
+        wind_direction: 'Direção do Vento:',
+        elysium_planitia: '📍 Elysium Planitia • Dados do NASA InSight Lander',
+        read_full: 'Ler explicação completa →',
+        video_content: 'Conteúdo de vídeo - visualize no site da NASA:',
+        refresh_now: '🔄 Atualizar Agora',
+        loading_text: 'Carregando...'
+      },
+      en: {
+        title: '🚀 COSMOS NASA Dashboard',
+        subtitle: 'Real-time space data from NASA',
+        api_status: 'API Status',
+        data_freshness: 'Data Freshness',
+        auto_refresh: '🔄 Auto-refresh:',
+        apod_title: 'Astronomy Picture of the Day',
+        loading_apod: 'Loading APOD...',
+        asteroids_title: 'Near Earth Objects',
+        loading_asteroids: 'Fetching asteroid data...',
+        iss_title: 'ISS Tracker',
+        loading_iss: 'Tracking ISS...',
+        weather_title: 'Space Weather',
+        loading_weather: 'Checking solar activity...',
+        mars_title: 'Mars Weather (InSight)',
+        loading_mars: 'Loading Mars data...',
+        system_title: 'System Info',
+        dashboard_version: 'Dashboard Version',
+        data_source: 'Data Source',
+        refresh_interval: 'Refresh Interval',
+        refresh_interval_val: '5 minutes',
+        rate_limit: 'Rate Limit',
+        rate_limit_val: '~50 req/hour',
+        last_update: 'Last Full Update',
+        built_with: 'Built with ❤️ using NASA Open APIs',
+        view_source: 'View Source',
+        data_disclaimer: 'Data provided by NASA. Not for navigation or critical operations.',
+        neo_today: 'Total NEOs Today',
+        potentially_hazardous: 'Potentially Hazardous',
+        hazardous_percent: '% of today\'s NEOs are potentially hazardous',
+        closest_approach: '🎯 Closest Approach:',
+        name: 'Name',
+        date: 'Date',
+        distance: 'Distance',
+        diameter: 'Diameter',
+        latitude: 'Latitude',
+        longitude: 'Longitude',
+        last_time_update: 'Last Update',
+        view_on_map: '🗺️ View on Map',
+        crew_aboard: '👨‍🚀 Crew Aboard:',
+        data_unavailable: 'Data unavailable',
+        cme_events: 'CME Events',
+        top_flare: 'Top Flare',
+        geomagnetic: 'Geomagnetic',
+        earth_impact: 'Earth Impact',
+        cme_status: 'CME Status',
+        solar_flares: 'Solar Flares',
+        space_weather_tip: '💡 Space weather can affect satellites, power grids, and communications.',
+        mars_weather_unavailable: 'Mars weather data unavailable',
+        mars_mission_ended: 'The InSight mission ended in December 2022.',
+        martian_sol: 'Martian Sol',
+        season: 'Season',
+        avg_temperature: 'Avg Temperature',
+        min_temp: 'Min (°C)',
+        max_temp: 'Max (°C)',
+        pressure: 'Pressure (hPa)',
+        wind_speed: 'Wind (m/s)',
+        wind_direction: 'Wind Direction:',
+        elysium_planitia: '📍 Elysium Planitia • Data from NASA InSight Lander',
+        read_full: 'Read full explanation →',
+        video_content: 'Video content - view on NASA site:',
+        refresh_now: '🔄 Refresh Now',
+        loading_text: 'Loading...'
+      }
+    };
 
-async function loadAPOD() {
-  let data = null;
-  try { data = await nasaFetch('/planetary/apod?thumbs=true', { retries: 1 }); } catch (e) { console.warn('APOD:', e.message); }
-  if (!data) {
-    try {
-      const r = await fetchJSON('https://images-api.nasa.gov/search?q=nebula%20galaxy&media_type=image', { retries: 1 });
-      const items = r.collection.items.filter(i => i.links && i.links[0] && i.links[0].href);
-      const it = items[Math.floor(Math.random() * items.length)];
-      data = { title: it.data[0].title, url: it.links[0].href, explanation: it.data[0].description || '',
-               date: (it.data[0].date_created || '').slice(0, 10), media_type: 'image', _source: 'fallback' };
-    } catch (e) { console.warn('Fallback APOD:', e.message); }
-  }
-  if (data && !data._source) { try { localStorage.setItem('apod_cache', JSON.stringify(data)); } catch (e) {} }
-  if (!data) {
-    try { data = JSON.parse(localStorage.getItem('apod_cache')); if (data) data._source = 'cache'; } catch (e) {}
-  }
-  if (!data) return fail('apod', new Error(t('unavailable')));
-  state.data.apod = data; renderAPOD(data); stamp('apod');
-  return data._source !== 'cache';
-}
+    let currentLanguage = localStorage.getItem('language') || 'pt';
+    const $ = (selector) => document.querySelector(selector);
+    const CONFIG = {
+      NASA_API_KEY: 'jJVEQxvqPSbHW80au6jKgwDk7prqdzamhyDjvz9p',
+      FALLBACK_API_KEY: 'DEMO_KEY',
+      REFRESH_INTERVAL: 5 * 60 * 1000,
+      TIMEOUT: 15000
+    };
 
-/* ====== ASTEROIDES ====== */
-function renderNEO(list) {
-  if (!list.length) return show('neo', row(t('neo_today'), '0'));
-  const haz = list.filter(a => a.is_potentially_hazardous_asteroid).length;
-  const pct = Math.round(haz / list.length * 1000) / 10;
-  const dist = a => parseFloat(a.close_approach_data[0].miss_distance.kilometers);
-  const c = list.reduce((m, a) => dist(a) < dist(m) ? a : m, list[0]);
-  const ca = c.close_approach_data[0];
-  show('neo',
-    row(t('neo_today'), list.length, 'hl') +
-    row(t('hazardous'), (haz ? '⚠️ ' : '') + haz, haz ? 'warn' : '') +
-    `<div class="bar"><div style="width:${pct}%"></div></div>
-     <div class="sub">${num(pct, 1)}% ${t('hazardous_pct')}</div>
-     <div class="sub"><strong>${t('closest')}</strong></div>` +
-    row(t('name'), esc(c.name.replace(/[()]/g, ''))) +
-    row(t('distance'), num(dist(c)) + ' km') +
-    row(t('diameter'), '~' + num(c.estimated_diameter.meters.estimated_diameter_max) + ' m') +
-    row(t('speed'), num(ca.relative_velocity.kilometers_per_hour) + ' km/h'));
-}
-async function loadNEO() {
-  try {
-    const day = isoDay(new Date());
-    const d = await nasaFetch(`/neo/rest/v1/feed?start_date=${day}&end_date=${day}`);
-    const list = Object.values(d.near_earth_objects).flat();
-    state.data.neo = list; renderNEO(list); stamp('neo'); return true;
-  } catch (e) { return fail('neo', e); }
-}
+    const state = {
+      lastFetch: null,
+      refreshTimer: null,
+      countdown: CONFIG.REFRESH_INTERVAL / 1000,
+      apiStatus: 'loading',
+      data: {
+        apod: null,
+        asteroids: null,
+        iss: null,
+        spaceWeather: null,
+        mars: null
+      }
+    };
 
-/* ====== ISS ====== */
-function renderISS(d) {
-  const crew = d.crew && d.crew.length ? `<div class="sub"><strong>${t('crew')} (${d.crew.length})</strong></div><div class="badges">${d.crew.map(n => `<span class="badge">${esc(n)}</span>`).join('')}</div>` : '';
-  show('iss',
-    row(t('lat'), num(d.latitude, 4) + '°') + row(t('lon'), num(d.longitude, 4) + '°') +
-    row(t('alt'), num(d.altitude) + ' km') + row(t('vel'), num(d.velocity) + ' km/h') +
-    row(t('time'), new Date(d.timestamp * 1000).toLocaleTimeString(loc())) +
-    `<div class="sub"><a href="https://www.openstreetmap.org/?mlat=${d.latitude}&mlon=${d.longitude}#map=3/${d.latitude}/${d.longitude}" target="_blank" rel="noopener">${t('map')}</a></div>` + crew);
-}
-async function loadISS() {
-  try {
-    const d = await fetchJSON('https://api.wheretheiss.at/v1/satellites/25544', { retries: 1 });
-    d.crew = (state.data.iss && state.data.iss.crew) || [];
-    if (!d.crew.length) {
-      try {
-        const p = await fetchJSON('https://corquaid.github.io/international-space-station-APIs/JSON/people-in-space.json', { retries: 0 });
-        d.crew = (p.people || []).filter(x => x.iss !== false).map(x => x.name);
-      } catch (e) { /* tripulação é opcional */ }
+    function translate(key) {
+      return (translations[currentLanguage] && translations[currentLanguage][key]) || key;
     }
-    state.data.iss = d; renderISS(d); stamp('iss'); return true;
-  } catch (e) { return fail('iss', e); }
-}
 
-/* ====== CLIMA ESPACIAL ====== */
-const flareRank = c => 'ABCMX'.indexOf((c || 'A')[0]) * 1000 + (parseFloat((c || '').slice(1)) || 0);
-function renderWeather(w) {
-  let html = '';
-  if (w.cme) html += row(t('cme'), w.cme.length, 'hl');
-  if (w.flr) {
-    const top = w.flr.reduce((m, f) => flareRank(f.classType) > flareRank(m ? m.classType : '') ? f : m, null);
-    const cls = top && 'MX'.includes(top.classType[0]) ? 'warn' : '';
-    html += row(t('flare'), top ? esc(top.classType) : t('none'), cls);
-  }
-  if (w.kp != null) {
-    const lvl = w.kp >= 5 ? ['storm', 'bad'] : w.kp >= 4 ? ['active', 'warn'] : ['calm', 'good'];
-    html += row(t('kp'), num(w.kp, 1), lvl[1]) + row(t('level'), t(lvl[0]), lvl[1]);
-  }
-  show('weather', html + `<div class="sub">${t('tip')}</div>`);
-}
-async function loadWeather() {
-  const end = new Date(), start = new Date(Date.now() - 7 * 864e5);
-  const q = `?startDate=${isoDay(start)}&endDate=${isoDay(end)}`;
-  const [cme, flr, kp] = await Promise.allSettled([
-    nasaFetch('/DONKI/CME' + q, { retries: 1 }),
-    nasaFetch('/DONKI/FLR' + q, { retries: 1 }),
-    fetchJSON('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json', { retries: 1 })
-  ]);
-  const w = {
-    cme: cme.status === 'fulfilled' && Array.isArray(cme.value) ? cme.value : (cme.status === 'fulfilled' ? [] : null),
-    flr: flr.status === 'fulfilled' && Array.isArray(flr.value) ? flr.value : (flr.s
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('language', lang);
+      document.querySelectorAll('.lang-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = translate(key);
+      });
+      if (state.data.apod) renderAPOD(state.data.apod);
+      if (state.data.asteroids) renderAsteroids(state.data.asteroids);
+      if (state.data.iss) renderISS(state.data.iss);
+      if (state.data.spaceWeather) renderSpaceWeather(state.data.spaceWeather);
+      if (state.data.mars) renderMarsWeather(state.data.mars);
+    }
+
+    function formatNumber(value, decimals = 0) {
+      const safe = typeof value === 'number' && !Number.isNaN(value) ? value : 0;
+      return new Intl.NumberFormat(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', {
+        maximumFractionDigits: Math.max(0, Math.min(20, decimals))
+      }).format(safe);
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '--';
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return '--';
+      return date.toLocaleDateString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', {
+        month: 'short', day: 'numeric', year: 'numeric'
+      });
+    }
+
+    function formatTime(dateString) {
+      if (!dateString) return '--';
+      const date = typeof dateString === 'number' ? new Date(dateString * 1000) : new Date(dateString);
+      if (Number.isNaN(date.getTime())) return '--';
+      return date.toLocaleTimeString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US', {
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function truncate(str, length) {
+      if (!str) return '';
+      return str.length > length ? `${str.substring(0, length - 3)}...` : str;
+    }
+
+    function updateLastUpdated(elementId) {
+      const el = $(elementId);
+      if (el) el.textContent = new Date().toLocaleTimeString(currentLanguage === 'pt' ? 'pt-BR' : 'en-US');
+    }
+
+    function setStatusDot(elementId, status) {
+      const dot = $(elementId);
+      if (dot) {
+        dot.clas
